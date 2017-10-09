@@ -12,6 +12,7 @@ cd webpack-react-demo
 ```
 // 安装前请先确保已安装node和npm
 // 安装成功后,再安装依赖，如果之前有用npm安装过，请先删掉node_modules
+
 npm install
 ```
 ### 运行
