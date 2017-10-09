@@ -1,8 +1,8 @@
 ### 下载
 ```
-git clone https://github.com/sosout/react-antd.git
+git clone git@github.com:blalablack/webpack-react-demo.git
 
-cd react-antd
+cd webpack-react-demo
 ```
 ### 安装
 
