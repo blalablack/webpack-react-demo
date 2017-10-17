@@ -3,13 +3,11 @@ const path=require('path');
 //引用插件
 const HtmlWebpackPlugin=require('html-webpack-plugin');//模板插件
 const CleanWebpackPlugin=require('clean-webpack-plugin');//模板插件
-
 const PATHS = {
   src: path.resolve(__dirname, 'src'),
   build: path.resolve(__dirname, 'build'),
   modules:path.resolve(__dirname,"node_modules")
 };
-
 module.exports={
   entry:[
     'react-hot-loader/patch',//开发过程中热替换
@@ -22,7 +20,7 @@ module.exports={
   devtool: 'eval-source-map',//'调试工具'
   //服务器配置
   devServer:{
-    contentBase:path.resolve(__dirname, "srccccc"),
+    contentBase:PATHS.build,
     port:9000,//端口
     hot:true,//热替换选项
   },
@@ -75,7 +73,7 @@ module.exports={
            {
             loader:'html-loader',
             options:{
-              attrs:['img:src','a:href']//筛选img和a
+              attrs:['img:src','link:href']//筛选img和a
             }
            }
         ]
