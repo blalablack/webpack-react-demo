@@ -1,13 +1,11 @@
-//const merge=require('webpack-merge');用来提取common插件，都有就会覆盖common
+const merge=require('webpack-merge');
 const path=require('path');
 const webpack=require('webpack');
-
 const HtmlWebpackPlugin=require('html-webpack-plugin');//模板插件
 const CleanWebpackPlugin=require('clean-webpack-plugin');//清理模板插件
 const ExtractTextPlugin = require('extract-text-webpack-plugin');//分离css插件
 const CompressionPlugin = require("compression-webpack-plugin");//gzip压缩代码
 const BannerPlugin=require('html-webpack-banner-plugin');
-
 const PATHS = {
   src: path.resolve(__dirname, 'src'),
   build: path.resolve(__dirname, 'build'),
@@ -23,19 +21,20 @@ module.exports={
     ]
   },
   output:{
+    publicPath:"/",
     path:PATHS.build,//执行路经
     filename:"js/[name].[chunkhash:5].js",
   },
-	//devtool:'cheap-module-eval-source-map',//生产环境的开发工具感觉可以去掉的啊，会减少无敌多的代码体积
-	module: {
+  //devtool:'cheap-module-eval-source-map',//生产环境的开发工具感觉可以去掉的啊，会减少无敌多的代码体积
+  module: {
     rules: [
       {
         test: /\.css$/,
         exclude:PATHS.modules,
         include:PATHS.src,
         use:[
-          'style-loader',//style标签插入html中
-          'css-loader?importLoaders=1',//@import的也能用,css-loader使在js中也能解析css
+          'style-loader',
+          'css-loader?importLoaders=1',
           'postcss-loader'
         ]
       }, 
@@ -44,7 +43,7 @@ module.exports={
         exclude:PATHS.modules,
         include:PATHS.src,
         use:[
-          'babel-loader',//style标签插入html中
+          'babel-loader',
         ]
       }, 
       {
@@ -64,7 +63,7 @@ module.exports={
            {
             loader:'html-loader',
             options:{
-              attrs:['img:src','a:href']
+              attrs:['img:src','link:href']
             }
            }
         ]
@@ -74,9 +73,6 @@ module.exports={
         exclude:PATHS.modules,
         include:PATHS.src,
         use: ExtractTextPlugin.extract({
-          //使用这个插件有一问题：css的默认路径是和output相同，如果把分离出来的css文件放在文件夹中，那么就会找不到img文件
-          //这里想到给他设置publicPath可以解决。但是这个publicPath会替换output中的publicPath不知道之后会有什么问题
-          publicPath: '../',
           fallback: 'style-loader',
           //如果需要，可以在 sass-loader 之前将 resolve-url-loader 链接进来
           use: ['css-loader?minimize=true', 'less-loader']
@@ -84,7 +80,7 @@ module.exports={
       }
     ]
   },
-	plugins:[
+  plugins:[
     new webpack.BannerPlugin('版权所有，翻版必究'),
     new CleanWebpackPlugin('build'),
     new HtmlWebpackPlugin({
@@ -107,7 +103,6 @@ module.exports={
     new webpack.optimize.CommonsChunkPlugin({
         name: 'runtime'
     }),
-
     //分离css，这样可以和js并行加载，优化页面
     new ExtractTextPlugin('css/[name].[contenthash:5].css'),
     //压缩成gzip格式
@@ -119,21 +114,21 @@ module.exports={
       minRatio: 0,//压缩率大于0就压缩
     }),
     //内置插件:压缩js代码和去掉没有引用的
-	  new webpack.optimize.UglifyJsPlugin({
+    new webpack.optimize.UglifyJsPlugin({
       //压缩之后启用sourceMap配合devtool使用
-	 		sourceMap:true
-	  }),
+      sourceMap:true
+    }),
     /*
     开发环境中，某些 library 为了使调试变得容易，可能会添加额外的日志记录(log)和测试(test)，
     使用这个production:一些 library 可能针对具体用户的环境进行代码优化，从而删除或添加一些重要代码
     如果您正在使用像 react 这样的 library，那么在添加此 DefinePlugin 插件后，你应该看到 bundle 大小显著下降。
     */
-	  new webpack.DefinePlugin({
+    new webpack.DefinePlugin({
       'process.env': {
         'NODE_ENV': JSON.stringify('production')
       }
     })
-	],
+  ],
   resolve: {
     modules: [
       PATHS.src,//指定优先查找路径，要放在node_modules上面
